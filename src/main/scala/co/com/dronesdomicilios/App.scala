@@ -1,9 +1,15 @@
 package co.com.dronesdomicilios
 
+import akka.actor.{ActorRef, ActorSystem, Props, Actor, Inbox}
+import Dron._
+
 object EntregaDeAlmuerzos extends App {
-  val d = new Dron
+  val system = ActorSystem("sistemaDrones")
 
-  d.entregarAlmuerzos
+  val d1 = system.actorOf(Props(new Dron), "Dron1")
 
-  System.exit(0)
+  d1 ! EntregarAlmuerzos
+  d1 ! Reportar
+
+  system.terminate
 }

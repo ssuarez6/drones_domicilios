@@ -2,8 +2,9 @@ package co.com.dronesdomicilios
 
 import scala.io.Source
 import java.io._
+import akka.actor.{ActorRef, ActorSystem, Props, Actor, Inbox}
 
-class Dron(val limite: Int = 3){
+class Dron(val limite: Int = 3, val id: String = "01") extends Actor{
   def in = Source.fromFile("in.txt").getLines.toList.map(_.toCharArray)
   val out = new PrintWriter(new File("out.txt"))
   val c = new Coordenada
@@ -11,6 +12,14 @@ class Dron(val limite: Int = 3){
 
   class CaracterIlegalException(c: Char) extends Exception(s"El archivo de entrada es inválido debido a que el caracter '$c' es incorrecto")
   class PosicionIncorrectaException(coor: Coordenada) extends Exception(s"La posición (${coor.x}, ${coor.y}) se sale de los límites. No se pueden entregar más almuerzos")
+
+  import Dron._
+
+  def receive = {
+    case EntregarAlmuerzos => entregarAlmuerzos
+    
+    case Reportar => reportar
+  }
 
   def irAOrigen = {
     c.x = 0
@@ -32,15 +41,16 @@ class Dron(val limite: Int = 3){
             case 'A' => c.A
             case 'I' => c.I
             case 'D' => c.D
+            case ' ' => {}
             case z => throw new CaracterIlegalException(z)
           }
         })
-        cont += 1
-        val copy = new Coordenada(c.x, c.y, c.sentido)
-        if(! copy.esValida) throw new PosicionIncorrectaException(copy)
-        destinos = copy::destinos
+      cont += 1
+      val snap = new Coordenada(c.x, c.y, c.sentido)
+      if(! snap.esValida) throw new PosicionIncorrectaException(snap)
+      destinos = snap::destinos
       })
-      reportar
+      //reportar
       out.close
     }catch{
       case pex: PosicionIncorrectaException => {
@@ -63,4 +73,9 @@ class Dron(val limite: Int = 3){
     out.write("== Reporte de entregas ==\n")
     destinos.reverse.foreach(cx => out.write(cx.toString))
   }
+}
+
+object Dron {
+  case object EntregarAlmuerzos
+  case object Reportar
 }
