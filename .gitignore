@@ -2,3 +2,5 @@
 target/
 project/
 *.swp
+in.txt
+out.txt
