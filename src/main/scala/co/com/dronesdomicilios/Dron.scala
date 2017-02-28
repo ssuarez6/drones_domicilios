@@ -2,80 +2,36 @@ package co.com.dronesdomicilios
 
 import scala.io.Source
 import java.io._
-import akka.actor.{ActorRef, ActorSystem, Props, Actor, Inbox}
 
-class Dron(val limite: Int = 3, val id: String = "01") extends Actor{
-  def in = Source.fromFile("in.txt").getLines.toList.map(_.toCharArray)
-  val out = new PrintWriter(new File("out.txt"))
-  val c = new Coordenada
-  var destinos = List[Coordenada]()
+class Dron(val limiteEntregas: Int = 3, val id: String = "01") {
 
-  class CaracterIlegalException(c: Char) extends Exception(s"El archivo de entrada es inválido debido a que el caracter '$c' es incorrecto")
-  class PosicionIncorrectaException(coor: Coordenada) extends Exception(s"La posición (${coor.x}, ${coor.y}) se sale de los límites. No se pueden entregar más almuerzos")
+  import Coordenada._
+  import RutaFactory._
+  var ubicacion = new Coordenada
+  var destinos = new Destinos
+  var destinoInalcanzable = false
+  var rutasHechas = 0
 
-  import Dron._
-
-  def receive = {
-    case EntregarAlmuerzos => entregarAlmuerzos
-    
-    case Reportar => reportar
-  }
-
-  def irAOrigen = {
-    c.x = 0
-    c.y = 0
-    c.sentido = "Norte"
-  }
-
-  def entregarAlmuerzos = {
-    try{
-      var cont = 0
-      val lineas = in
-      lineas.foreach(linea => {
-        if(cont == limite) {
-          cont = 0
-          irAOrigen
+  def recibirRuta(rt: RutaValida) = {
+    if(!rt.validaDesde(ubicacion) || destinoInalcanzable) {
+      destinos = destinos.agregar(s"Ruta $rt es inalcanzable") 
+      destinoInalcanzable = true
+    }else{
+      rt.text.foreach(cmd =>{
+        cmd match {
+          case 'A' => ubicacion = ubicacion.adelante
+          case 'D' => ubicacion = ubicacion.derecha
+          case 'I' => ubicacion = ubicacion.izquierda
         }
-        linea.foreach(char => {
-          char match {
-            case 'A' => c.A
-            case 'I' => c.I
-            case 'D' => c.D
-            case ' ' => {}
-            case z => throw new CaracterIlegalException(z)
-          }
-        })
-      cont += 1
-      val snap = new Coordenada(c.x, c.y, c.sentido)
-      if(! snap.esValida) throw new PosicionIncorrectaException(snap)
-      destinos = snap::destinos
-      })
-      //reportar
-      out.close
-    }catch{
-      case pex: PosicionIncorrectaException => {
-        reportar
-        out.write(pex.getMessage)
-        out.close
-      }
-      case cex: CaracterIlegalException =>{
-        out.write(cex.getMessage)
-        out.close
-      }
-      case ex: Exception => {
-        println(s"No se pudo abrir el fichero.\nError: ${ex.printStackTrace}")
-        System.exit(1)
-      }
+      })  
+      destinos = destinos.agregar(ubicacion)
     }   
+    rutasHechas += 1
+    if(rutasHechas == limiteEntregas) {
+      rutasHechas = 0
+      ubicacion = Coordenada.origen
+    }
   }
 
-  def reportar = {
-    out.write("== Reporte de entregas ==\n")
-    destinos.reverse.foreach(cx => out.write(cx.toString))
-  }
-}
-
-object Dron {
-  case object EntregarAlmuerzos
-  case object Reportar
+  def reporte = destinos.toString
 }

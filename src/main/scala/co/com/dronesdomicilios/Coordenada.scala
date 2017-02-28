@@ -2,25 +2,30 @@ package co.com.dronesdomicilios
 
 class Coordenada(var x: Int = 0, var y: Int = 0, var sentido: String = "Norte"){
   override def toString = s"($x, $y) dirección $sentido\n"
-  def A: Unit = {
+  def adelante: Coordenada = {
     sentido match {
-      case "Norte" => this.y = y+1
-      case "Sur" => this.y = y-1
-      case "Oriente" => this.x = x+1
-      case "Occidente" => this.x = x-1
+      case "Norte" => new Coordenada(x, y+1, sentido)
+      case "Sur" => new Coordenada(x, y-1, sentido)
+      case "Oriente" => new Coordenada(x+1, y, sentido)
+      case "Occidente" => new Coordenada(x-1, y, sentido)
     }
   }
-  def I: Unit = sentido match {
-    case "Norte" => this.sentido = "Occidente"
-    case "Sur" => this.sentido = "Oriente" //ask
-    case "Oriente" => this.sentido = "Norte"
-    case "Occidente" => this.sentido = "Sur"
+  def izquierda: Coordenada = sentido match {
+    case "Norte" => new Coordenada(x, y, "Occidente")
+    case "Sur" => new Coordenada(x, y, "Oriente")
+    case "Oriente" => new Coordenada(x, y, "Norte")
+    case "Occidente" => new Coordenada(x, y, "Sur")
   }
-  def D: Unit = sentido match {
-    case "Norte" => this.sentido = "Oriente"
-    case "Oriente" => this.sentido = "Sur"
-    case "Sur" => this.sentido = "Occidente"
-    case "Occidente" => this.sentido = "Norte"
+  def derecha: Coordenada = sentido match {
+    case "Norte" => new Coordenada(x, y, "Oriente")
+    case "Oriente" => new Coordenada(x, y, "Sur")
+    case "Sur" => new Coordenada(x, y, "Occidente")
+    case "Occidente" => new Coordenada(x, y, "Norte")
   }
   def esValida: Boolean = !(x > 10 || x < -10 || y > 10 || y < -10)
+
+}
+
+object Coordenada {
+  def origen: Coordenada = new Coordenada
 }
