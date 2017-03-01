@@ -6,7 +6,7 @@ object RutaFactory {
   case class RutaInvalida(val ruta: List[Char]) extends RutaFactory
 
   class RutaValida(val text: List[Char]) extends RutaFactory {
-    def validaDesde(coor: Coordenada): Boolean = {
+    def validaDesde(coor: Coordenada, lim: Int): Boolean = {
       var copy = new Coordenada(coor.x, coor.y, coor.sentido)
       var valida = true
       text.foreach(acc => {
@@ -15,7 +15,7 @@ object RutaFactory {
           case 'I' => copy = copy.izquierda
           case 'D' => copy = copy.derecha
         }
-        if(!copy.esValida) valida = false
+        if(!copy.esValida(lim)) valida = false
       })
       valida
     }  
@@ -34,3 +34,5 @@ object RutaFactory {
     else new RutaValida(text)
   }
 }
+
+case class PackRutas(val rts: List[RutaFactory.RutaValida])

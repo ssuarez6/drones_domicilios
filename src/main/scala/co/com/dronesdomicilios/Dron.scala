@@ -3,17 +3,16 @@ package co.com.dronesdomicilios
 import scala.io.Source
 import java.io._
 
-class Dron(val limiteEntregas: Int = 3) {
+class Dron (lim: Int = 10){
 
   import Coordenada._
   import RutaFactory._
   var ubicacion = new Coordenada
   var destinos = new Destinos
   var destinoInalcanzable = false
-  var rutasHechas = 0
 
   def recibirRuta(rt: RutaValida) = {
-    if(!rt.validaDesde(ubicacion) || destinoInalcanzable) {
+    if(!rt.validaDesde(ubicacion, lim) || destinoInalcanzable) {
       destinos = destinos.agregar(s"Ruta ${rt.toString} es inalcanzable") 
       destinoInalcanzable = true
     }else{
@@ -25,12 +24,16 @@ class Dron(val limiteEntregas: Int = 3) {
         }
       })  
       destinos = destinos.agregar(ubicacion)
-    }   
-    rutasHechas += 1
-    if(rutasHechas == limiteEntregas) {
-      rutasHechas = 0
-      ubicacion = Coordenada.origen
-    }
+    } 
+  }
+
+  def recibirPack(pack: PackRutas){
+    destinoInalcanzable = false
+    val rutas = pack.rts
+    rutas.foreach(rt =>{
+      recibirRuta(rt)
+    })
+    ubicacion = Coordenada.origen
   }
 
   def reporte = destinos.toString
