@@ -11,7 +11,7 @@ class Dron (lim: Int = 10){
   var destinos = new Destinos
   var destinoInalcanzable = false
 
-  def recibirRuta(rt: RutaValida) = {
+  def entregarAlmuerzo(rt: RutaValida) = {
     if(!rt.validaDesde(ubicacion, lim) || destinoInalcanzable) {
       destinos = destinos.agregar(s"Ruta ${rt.toString} es inalcanzable") 
       destinoInalcanzable = true
@@ -31,7 +31,7 @@ class Dron (lim: Int = 10){
     destinoInalcanzable = false
     val rutas = pack.rts
     rutas.foreach(rt =>{
-      recibirRuta(rt)
+      entregarAlmuerzo(rt)
     })
     ubicacion = Coordenada.origen
   }

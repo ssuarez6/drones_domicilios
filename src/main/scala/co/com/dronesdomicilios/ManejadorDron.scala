@@ -24,7 +24,6 @@ class ManejadorDron(val limiteEntregas: Int = 3){
     val todasValidas = validez._1
     if(todasValidas){
       val packs = crearPacks(validez._2)
-      println(packs)
       Right(packs)
     }else{
       Left(true)
@@ -43,8 +42,6 @@ class ManejadorDron(val limiteEntregas: Int = 3){
     val creacion = crearPackRutas
     if(creacion.isRight){
       val packs = creacion.right.get
-      println("Paquetes:")
-      println(packs)
       packs.foreach(pck => dron.recibirPack(pck))
       Right(dron.reporte)
     }else{
