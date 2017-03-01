@@ -19,6 +19,12 @@ object RutaFactory {
       })
       valida
     }  
+
+    override def toString: String = {
+      var text = ""
+      this.text.foreach(c => text = text + c)
+      text
+    }
   }
 
 

@@ -5,10 +5,8 @@ import java.io._
 
 class ManejadorDron(val limiteEntregas: Int = 3){
   import RutaFactory._
-  val ficheroSalida = new File("out.txt")
-  val impresora = new PrintWriter(ficheroSalida)
+  val impresora = new PrintWriter(new File("out.txt"))
   val dron = new Dron(limiteEntregas)
-
 
   def despachar: Either[String, String]= {
     var cont = 0
@@ -16,7 +14,7 @@ class ManejadorDron(val limiteEntregas: Int = 3){
     var rutaInvalida = false
     val listaRutas = lineasEntrada.map(x => RutaFactory(x))
     val todasValidas = listaRutas.forall({
-      case _: RutaFactory.RutaInvalida => false
+      case _: RutaInvalida => false
       case _ => true
     })
     if(todasValidas){
@@ -29,9 +27,11 @@ class ManejadorDron(val limiteEntregas: Int = 3){
 
   def escribirEnFichero = {
     val resultado = despachar
-    if(resultado.isRight) impresora.write(resultado.right.get)
+    if(resultado.isRight){
+      impresora.write("== Reporte de entregas ==\n")
+      impresora.write(resultado.right.get)
+    }
     else impresora.write(resultado.left.get)
     impresora.close
   }
-
 }

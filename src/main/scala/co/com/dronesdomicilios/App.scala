@@ -5,7 +5,6 @@ import Dron._
 
 object EntregaDeAlmuerzos extends App {
   val md = new ManejadorDron
-  md.despachar
   md.escribirEnFichero
   System.exit(0)
 }
