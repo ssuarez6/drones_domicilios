@@ -1,38 +1,31 @@
 package co.com.dronesdomicilios
 
-sealed trait RutaFactory
+class Ruta(val text: List[Char]) {
+  def validaDesde(coor: Coordenada, lim: Int): Boolean = {
+    var copy = new Coordenada(coor.x, coor.y, coor.sentido)
+    var valida = true
+    text.foreach(acc => {
+      acc match {
+        case 'A' => copy = copy.adelante
+        case 'I' => copy = copy.izquierda
+        case 'D' => copy = copy.derecha
+      }
+      if(!copy.esValida(lim)) valida = false
+    })
+    valida
+  }  
 
-object RutaFactory {
-  case class RutaInvalida(val ruta: List[Char]) extends RutaFactory
-
-  class RutaValida(val text: List[Char]) extends RutaFactory {
-    def validaDesde(coor: Coordenada, lim: Int): Boolean = {
-      var copy = new Coordenada(coor.x, coor.y, coor.sentido)
-      var valida = true
-      text.foreach(acc => {
-        acc match {
-          case 'A' => copy = copy.adelante
-          case 'I' => copy = copy.izquierda
-          case 'D' => copy = copy.derecha
-        }
-        if(!copy.esValida(lim)) valida = false
-      })
-      valida
-    }  
-
-    override def toString: String = {
-      var text = ""
-      this.text.foreach(c => text = text + c)
-      text
-    }
+  def esValida: Boolean = {
+    val test = text.filter(x => x!='A' && x!='I' && x!='D')
+    test.size==0
   }
 
-
-  def apply(text: List[Char]): RutaFactory = {
-    val test = text.filter(x => x!='A' && x!='I' && x!='D')
-    if(test.size > 0) new RutaInvalida(text)
-    else new RutaValida(text)
+  override def toString: String = {
+    var text = ""
+    this.text.foreach(c => text = text + c)
+    text
   }
 }
 
-case class PackRutas(val rts: List[RutaFactory.RutaValida])
+
+case class PackRutas(val rts: List[Ruta])

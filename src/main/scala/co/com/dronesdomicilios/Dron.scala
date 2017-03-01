@@ -6,14 +6,13 @@ import java.io._
 class Dron (lim: Int = 10){
 
   import Coordenada._
-  import RutaFactory._
   var ubicacion = new Coordenada
   var destinos = new Destinos
   var destinoInalcanzable = false
 
-  def entregarAlmuerzo(rt: RutaValida) = {
-    if(!rt.validaDesde(ubicacion, lim) || destinoInalcanzable) {
-      destinos = destinos.agregar(s"Ruta ${rt.toString} es inalcanzable") 
+  def entregarAlmuerzo(rt: Ruta) = {
+    if(!rt.esValida || !rt.validaDesde(ubicacion, lim) || destinoInalcanzable) {
+      destinos = destinos.agregar(s"Ruta ${rt.toString} es inalcanzable o invalida") 
       destinoInalcanzable = true
     }else{
       rt.text.foreach(cmd =>{
