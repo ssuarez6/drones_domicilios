@@ -13,12 +13,12 @@ class ManejadorDron(val limiteEntregas: Int = 3){
       if(rutas.isEmpty) salida
       else crearPacks(rutas drop limiteEntregas, salida :+ PackRutas(rutas take limiteEntregas))
     }
-    crearPacks(rutas, List[PackRutas]() )
+    crearPacks(rutas, List[PackRutas]())
   }
 
   def despachar: Either[String, String]= {
-    val attemp = Try(Source.fromFile("in.txt").getLines.toList.map(_.toList))
-    attemp match {
+    val lf = new LectorFichero
+    lf.cargarRutas match {
       case Success(list) => {
         val listRutas: List[Ruta] = list.map(x => new Ruta(x))
         val listPacks: List[PackRutas] = crearPacks(listRutas)
@@ -39,3 +39,4 @@ class ManejadorDron(val limiteEntregas: Int = 3){
     impresora.close
   }
 }
+

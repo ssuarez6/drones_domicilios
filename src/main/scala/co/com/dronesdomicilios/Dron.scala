@@ -12,15 +12,13 @@ class Dron (lim: Int = 10){
 
   def entregarAlmuerzo(rt: Ruta) = {
     if(!rt.esValida || !rt.validaDesde(ubicacion, lim) || destinoInalcanzable) {
-      destinos = destinos.agregar(s"Ruta ${rt.toString} es inalcanzable o invalida") 
+      destinos = destinos.agregar(s"Ruta ${rt.toString} es inalcanzable o inválida") 
       destinoInalcanzable = true
     }else{
-      rt.text.foreach(cmd =>{
-        cmd match {
+      rt.text.foreach({
           case 'A' => ubicacion = ubicacion.adelante
           case 'D' => ubicacion = ubicacion.derecha
           case 'I' => ubicacion = ubicacion.izquierda
-        }
       })  
       destinos = destinos.agregar(ubicacion)
     } 
