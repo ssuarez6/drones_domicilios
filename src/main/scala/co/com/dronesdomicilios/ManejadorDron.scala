@@ -15,7 +15,7 @@ class ManejadorDron(val limiteEntregas: Int = 3){
     crearPacks(rutas, List[PackRutas]())
   }
 
-  def despachar(posiblesRutas: Try[List[List[Char]]]): Either[String, String]= {
+  def despachar(posiblesRutas: Try[List[List[Comando]]]): Either[String, String]= {
     posiblesRutas match {
       case Success(list) => {
         val listRutas: List[Ruta] = list.map(x => new Ruta(x))

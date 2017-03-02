@@ -5,8 +5,17 @@ import scala.io.Source
 import java.io.{PrintWriter, File}
 
 sealed trait RutasReaderService {
-  type ListaRutas = Try[List[List[Char]]]
+  type ListaRutas = Try[List[List[Comando]]]
   def cargarRutas: ListaRutas
+  
+  def charToComando(c: Char): Comando = {
+    c match {
+      case 'A' => Adelante
+      case 'D' => Derecha
+      case 'I' => Izquierda
+      case _ => Invalido
+    }
+  }
 }
 
 sealed trait RutasWriterService {
@@ -15,8 +24,18 @@ sealed trait RutasWriterService {
 }
 
 class RutasLectorFicheroService (ficheroEntrada: String = "in.txt") extends RutasReaderService {
-  override def cargarRutas(): ListaRutas = 
-    Try(Source.fromFile(ficheroEntrada).getLines.toList.map(_.toList))
+  override def cargarRutas(): ListaRutas = Try{
+    Source
+      .fromFile(ficheroEntrada)
+      .getLines
+      .toList
+      .map(_
+          .toList
+          .map(charToComando(_))
+        )
+  } 
+
+  
 }
 
 class RutasEscritorFicheroService (ficheroSalida: String = "out.txt") extends RutasWriterService {

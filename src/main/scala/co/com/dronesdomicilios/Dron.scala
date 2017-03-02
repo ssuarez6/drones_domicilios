@@ -15,9 +15,9 @@ class Dron (lim: Int = 10){
       destinoInalcanzable = true
     }else{
       rt.text.foreach({
-          case 'A' => ubicacion = ubicacion.adelante
-          case 'D' => ubicacion = ubicacion.derecha
-          case 'I' => ubicacion = ubicacion.izquierda
+          case Adelante => ubicacion = ubicacion.adelante
+          case Derecha => ubicacion = ubicacion.derecha
+          case Izquierda => ubicacion = ubicacion.izquierda
       })  
       destinos = destinos.agregar(ubicacion)
     } 

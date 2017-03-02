@@ -1,16 +1,19 @@
 package co.com.dronesdomicilios
 
-trait Comando 
-
-object Adelante extends Comando
-object Derecha extends Comando
-object Izquierda extends Comando
-
-class Ruta(val text: List[Char]) {
+class Ruta(val text: List[Comando]) {
   override def toString: String = {
     var text = ""
-    this.text.foreach(c => text = text + c)
+    this.text.foreach(c => text = text + comandoToChar(c))
     text
+  }
+
+  def comandoToChar(c: Comando): Char = {
+    c match {
+      case Adelante => 'A'
+      case Derecha => 'D'
+      case Izquierda => 'I'
+      case Invalido => '$'
+    }
   }
 }
 
@@ -22,9 +25,9 @@ class VerificadorRuta(){
     var valida = true
     rt.text.foreach(acc => {
       acc match {
-        case 'A' => copy = copy.adelante
-        case 'I' => copy = copy.izquierda
-        case 'D' => copy = copy.derecha
+        case Adelante => copy = copy.adelante
+        case Izquierda => copy = copy.izquierda
+        case Derecha => copy = copy.derecha
       }
       valida = copy.entreLimites(lim)
     })
@@ -32,5 +35,5 @@ class VerificadorRuta(){
   }  
 
   def esValida(rt: Ruta): Boolean = 
-    rt.text.filter(x => x!='A' && x!='I' && x!='D').size == 0
+    rt.text.filter(x => x==`Invalido`).size == 0
 }
