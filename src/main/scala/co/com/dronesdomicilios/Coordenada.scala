@@ -22,7 +22,7 @@ class Coordenada(var x: Int = 0, var y: Int = 0, var sentido: String = "Norte"){
     case "Sur" => new Coordenada(x, y, "Occidente")
     case "Occidente" => new Coordenada(x, y, "Norte")
   }
-  def esValida(lim: Int): Boolean = 
+  def entreLimites(lim: Int): Boolean = 
     !(x > lim || x < -lim || y > lim || y < -lim)
 
 }

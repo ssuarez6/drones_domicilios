@@ -4,19 +4,19 @@ class Destinos(var dests: List[Either[String, Coordenada]] = List()) {
 
   def agregar(c: Coordenada): Destinos = {
     val rc = Right(c)
-    dests = rc::dests
+    dests = dests :+ rc
     new Destinos(dests)
   }
 
   def agregar(error: String): Destinos = {
     val ls = Left(error)
-    dests = ls::dests
+    dests = dests :+ ls
     new Destinos(dests)
   }
 
   override def toString = {
     var text = ""
-    dests.reverse.foreach(dst => {
+    dests.foreach(dst => {
       if(dst.isRight) text = text + dst.right.get.toString
       else text = text + dst.left.get.toString + "\n"
     })
