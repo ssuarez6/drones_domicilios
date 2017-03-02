@@ -5,10 +5,14 @@ import scala.util.Try
 
 object EntregaDeAlmuerzos extends App {
   val md = new ManejadorDron
+  /*
+   * Ejecucion de la primera parte del ejercicio
+   */
   val lectorFichero = new RutasLectorFicheroService
-  val lecturaEntrada: Try[List[List[Comando]]] = lectorFichero.cargarRutas
-  val reporte = md.despachar(lecturaEntrada)
   val escritorFichero = new RutasEscritorFicheroService
-  val escritor = escritorFichero.escribirRutas(reporte)
+  val lecturaEntrada: Try[List[List[Comando]]] = lectorFichero.cargarRutas
+  val escritor = escritorFichero.escribirRutas(md.despachar(lecturaEntrada))
+
+
   System.exit(0)
 }

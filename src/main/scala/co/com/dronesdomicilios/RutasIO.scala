@@ -34,8 +34,6 @@ class RutasLectorFicheroService (ficheroEntrada: String = "in.txt") extends Ruta
           .map(charToComando(_))
         )
   } 
-
-  
 }
 
 class RutasEscritorFicheroService (ficheroSalida: String = "out.txt") extends RutasWriterService {

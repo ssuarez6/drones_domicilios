@@ -1,6 +1,6 @@
 package co.com.dronesdomicilios
 
-class Dron (lim: Int = 10){
+class Dron (lim: Int = 10, val capEntregas: Int = 3){
 
   import Coordenada._
   var ubicacion = new Coordenada
@@ -23,7 +23,7 @@ class Dron (lim: Int = 10){
     } 
   }
 
-  def recibirPack(pack: PackRutas){
+  def realizarEntrega(pack: PackRutas){
     destinoInalcanzable = false
     val rutas = pack.rts
     rutas.foreach(rt =>{
